@@ -416,8 +416,10 @@
 <script>
 /* ---------- storage ---------- */
 const LS='b120_v1';
+// Shared cohort backend (Google Apps Script web app). Baked in so agents only enter their name.
+const BACKEND_URL='https://script.google.com/macros/s/AKfycbyGFZ3QHBPVVUrOku0S2zDkdAJYoBQQpWCovx9EOlt_cfNr20QipfK-MmjSW9QuCbJdsw/exec';
 // day record shape: days['2026-07-06'] = {c:8, appt:1, agree:0}
-function load(){try{return Object.assign({name:'',start:'2026-07-06',url:'',days:{}},JSON.parse(localStorage.getItem(LS)||'{}'))}catch(e){return {name:'',start:'2026-07-06',url:'',days:{}}}}
+function load(){try{const s=Object.assign({name:'',start:'2026-07-06',url:'',days:{}},JSON.parse(localStorage.getItem(LS)||'{}'));if(!s.url)s.url=BACKEND_URL;return s;}catch(e){return {name:'',start:'2026-07-06',url:BACKEND_URL,days:{}}}}
 function save(){localStorage.setItem(LS,JSON.stringify(S))}
 let S=load();
 
