@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Breakthrough 120 — KW Thrive</title>
+<style>
+  :root{
+    --kw-red:#CC2027;
+    --kw-red-dark:#A81820;
+    --navy:#2A2E37;
+    --navy-2:#363B46;
+    --teal:#17A2B8;
+    --teal-dark:#128499;
+    --bg:#F4F5F7;
+    --card:#FFFFFF;
+    --line:#E4E7EB;
+    --ink:#1E232B;
+    --muted:#6B7280;
+    --good:#2E9E5B;
+    --warn:#E6A100;
+    --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Open Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);
+    line-height:1.45;-webkit-font-smoothing:antialiased;
+    padding-bottom:76px;
+  }
+  /* Header */
+  header{
+    background:var(--navy);color:#fff;
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;position:sticky;top:0;z-index:20;
+  }
+  .kwmark{
+    background:var(--kw-red);color:#fff;font-weight:800;
+    width:34px;height:34px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;letter-spacing:.5px;flex:0 0 auto;
+  }
+  header .title{font-weight:700;font-size:15px;line-height:1.1}
+  header .title small{display:block;font-weight:400;font-size:11px;color:#B9C0CC;letter-spacing:.3px}
+  header .who{margin-left:auto;font-size:12px;color:#C9D0DA;text-align:right;max-width:40%}
+  header .who b{color:#fff;display:block;font-size:13px}
+
+  main{max-width:640px;margin:0 auto;padding:16px 16px 8px}
+  .view{display:none}
+  .view.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+  .card h2{margin:0 0 4px;font-size:16px}
+  .card .sub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+  h1.page{font-size:20px;margin:2px 0 14px}
+
+  /* Today counter */
+  .counter{text-align:center;padding:6px 0 2px}
+  .counter .num{font-size:66px;font-weight:800;line-height:1;color:var(--navy)}
+  .counter .of{font-size:16px;color:var(--muted);font-weight:600}
+  .ring{display:block;margin:8px auto 4px}
+  .stepper{display:flex;gap:12px;justify-content:center;margin:14px 0 4px}
+  .step{
+    width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+    font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);transition:transform .06s ease;
+  }
+  .step:active{transform:scale(.93)}
+  .step.minus{background:#fff;border:2px solid var(--line);color:var(--navy)}
+  .step.plus{background:var(--kw-red);color:#fff}
+  .quickrow{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--navy)}
+  .chip:active{background:#f0f1f3}
+
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .toggle{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;cursor:pointer;background:#fff}
+  .toggle .t-num{font-size:26px;font-weight:800;color:var(--navy)}
+  .toggle .t-lab{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .toggle .mini{display:flex;gap:8px;justify-content:center;margin-top:8px}
+  .toggle .mini button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:18px;font-weight:700;cursor:pointer;color:var(--navy)}
+  .toggle.appt{border-top:3px solid var(--teal)}
+  .toggle.agree{border-top:3px solid var(--kw-red)}
+
+  .btn{display:block;width:100%;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-top:8px}
+  .btn.primary{background:var(--navy);color:#fff}
+  .btn.primary:active{background:#20242c}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .saved{color:var(--good);font-size:13px;text-align:center;font-weight:600;height:18px;margin-top:8px}
+
+  /* Dashboard */
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+  .kpi .v{font-size:30px;font-weight:800;color:var(--navy);line-height:1}
+  .kpi .l{font-size:12px;color:var(--muted);font-weight:600;margin-top:4px}
+  .kpi .goal{font-size:12px;color:var(--teal);font-weight:700;margin-top:2px}
+  .kpi.big{grid-column:1/-1;display:flex;align-items:center;gap:16px}
+  .kpi.big .v{font-size:40px}
+  .progress{height:12px;border-radius:8px;background:#EAECEF;overflow:hidden;margin-top:10px}
+  .progress > span{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--kw-red))}
+  .pace{font-size:12.5px;font-weight:700;margin-top:8px}
+  .pace.ahead{color:var(--good)}
+  .pace.behind{color:var(--warn)}
+  .daychip{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+  .funnel{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:10px}
+  .funnel .bar{flex:1;background:var(--teal);border-radius:6px 6px 0 0;position:relative;min-height:6px}
+  .funnel .bar:nth-child(2){background:#5FB0C0}
+  .funnel .bar:nth-child(3){background:var(--kw-red)}
+  .funnel .bar b{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:12px;color:var(--navy)}
+  .funnel-labels{display:flex;gap:6px;margin-top:4px}
+  .funnel-labels span{flex:1;text-align:center;font-size:10.5px;color:var(--muted);font-weight:600}
+
+  .streakbox{display:flex;align-items:center;gap:14px}
+  .flame{font-size:40px}
+  .streakbox .v{font-size:34px;font-weight:800;color:var(--navy);line-height:1}
+  .streakbox .l{font-size:12.5px;color:var(--muted)}
+
+  /* Leaderboard */
+  .lbtabs{display:flex;gap:6px;margin-bottom:12px}
+  .lbtabs button{flex:1;border:1px solid var(--line);background:#fff;padding:9px;border-radius:10px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer}
+  .lbtabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lrow{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid var(--line)}
+  .lrow:last-child{border-bottom:none}
+  .rank{width:26px;font-weight:800;color:var(--muted);text-align:center;flex:0 0 auto}
+  .rank.top{color:var(--kw-red)}
+  .ava{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:0 0 auto}
+  .lrow .nm{font-weight:700;font-size:14px}
+  .lrow .meta{font-size:11.5px;color:var(--muted)}
+  .lrow .score{margin-left:auto;font-weight:800;font-size:18px;color:var(--navy)}
+  .lrow.me{background:#FFF6F0;border-radius:10px}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+
+  /* Playbook */
+  .acc{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}
+  .acc > summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:14px;list-style:none;display:flex;align-items:center;gap:10px}
+  .acc > summary::-webkit-details-marker{display:none}
+  .acc > summary .dot{width:8px;height:8px;border-radius:50%;background:var(--kw-red);flex:0 0 auto}
+  .acc[open] > summary{border-bottom:1px solid var(--line);background:#FAFBFC}
+  .acc .body{padding:14px 16px;font-size:13.5px}
+  .acc .body p{margin:0 0 10px}
+  .acc .body .script{background:#F6F8FA;border-left:3px solid var(--teal);padding:10px 12px;border-radius:0 8px 8px 0;font-style:italic;margin:0 0 10px}
+  .acc .body .tip{font-size:12px;color:var(--muted)}
+  .slot{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;color:var(--muted);font-size:12.5px;background:#fafafa}
+
+  .sched{width:100%;border-collapse:collapse;font-size:13px}
+  .sched td,.sched th{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}
+  .sched th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  .sched .day{font-weight:800;color:var(--kw-red)}
+
+  /* Settings */
+  label.fld{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin:12px 0 5px}
+  input.in{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .badge.on{background:#E7F6EC;color:var(--good)}
+  .badge.off{background:#FDECEC;color:var(--kw-red)}
+
+  /* Bottom nav */
+  nav{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
+    display:flex;z-index:30;max-width:640px;margin:0 auto;
+  }
+  nav button{flex:1;background:none;border:none;padding:9px 4px 8px;cursor:pointer;color:var(--muted);font-size:10.5px;font-weight:700}
+  nav button .ic{display:block;font-size:20px;line-height:1;margin-bottom:2px}
+  nav button.on{color:var(--kw-red)}
+  .note{font-size:11px;color:var(--muted);text-align:center;margin:6px 0 2px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kwmark">kw</div>
+  <div class="title">Breakthrough 120<small>KW Thrive · Santa Cruz</small></div>
+  <div class="who" id="whoBox"><b id="whoName">—</b><span id="whoDay"></span></div>
+</header>
+
+<main>
+  <!-- TODAY -->
+  <section class="view active" id="view-today">
+    <h1 class="page">Today's conversations</h1>
+    <div class="card">
+      <div class="counter">
+        <div><span class="num" id="cNum">0</span><span class="of"> / 10</span></div>
+        <div class="progress" style="max-width:240px;margin:12px auto 0"><span id="cBar" style="width:0%"></span></div>
+      </div>
+      <div class="stepper">
+        <button class="step minus" onclick="bump(-1)">–</button>
+        <button class="step plus" onclick="bump(1)">+</button>
+      </div>
+      <div class="quickrow">
+        <button class="chip" onclick="bump(1)">+1</button>
+        <button class="chip" onclick="bump(3)">+3</button>
+        <button class="chip" onclick="bump(5)">+5</button>
+        <button class="chip" onclick="setToday(10)">Hit 10 ✓</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Results today</h2>
+      <p class="sub">Log the outcomes that came from your conversations.</p>
+      <div class="toggles">
+        <div class="toggle appt">
+          <div class="t-num" id="aNum">0</div>
+          <div class="t-lab">Appointments set</div>
+          <div class="mini"><button onclick="bumpField('appt',-1)">–</button><button onclick="bumpField('appt',1)">+</button></div>
+        </div>
+        <div class="toggle agree">
+          <div class="t-num" id="gNum">0</div>
+          <div class="t-lab">Agreements signed</div>
+          <div class="mini"><button onclick="bumpField('agree',-1)">–</button><button onclick="bumpField('agree',1)">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn primary" onclick="saveToday()">Save today</button>
+    <div class="saved" id="savedMsg"></div>
+    <p class="note" id="syncNote">Local only — set up sharing in Settings to join the cohort leaderboard.</p>
+  </section>
+
+  <!-- MY 120 -->
+  <section class="view" id="view-dash">
+    <h1 class="page">My 120</h1>
+    <span class="daychip" id="dayChip">Day — of 120</span>
+    <div class="card">
+      <div class="kpi big" style="border:none;box-shadow:none;padding:0;margin:0">
+        <div>
+          <div class="v"><span id="dAgree">0</span> <span style="font-size:20px;color:var(--muted)">/ 9</span></div>
+          <div class="l">Signed agreements — the goal</div>
+        </div>
+      </div>
+      <div class="progress"><span id="goalBar" style="width:0%"></span></div>
+      <div class="pace" id="paceMsg">—</div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="dConv">0</div><div class="l">Total conversations</div><div class="goal" id="convGoal">goal by today: —</div></div>
+      <div class="kpi"><div class="v" id="dAppt">0</div><div class="l">Appointments set</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Your funnel</h2>
+      <p class="sub">Conversations → appointments → agreements. Watch the ratios, not just the top.</p>
+      <div class="funnel">
+        <div class="bar" id="fConv" style="height:6px"><b id="fConvN">0</b></div>
+        <div class="bar" id="fAppt" style="height:6px"><b id="fApptN">0</b></div>
+        <div class="bar" id="fAgree" style="height:6px"><b id="fAgreeN">0</b></div>
+      </div>
+      <div class="funnel-labels"><span>Conversations</span><span>Appointments</span><span>Agreements</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Consistency</h2>
+      <div class="streakbox">
+        <div class="flame">🔥</div>
+        <div>
+          <div class="v"><span id="streak">0</span> day streak</div>
+          <div class="l"><span id="daysActive">0</span> days logged · <span id="avgConv">0</span> avg conversations/day</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="view" id="view-board">
+    <h1 class="page">Cohort leaderboard</h1>
+    <div class="lbtabs">
+      <button class="on" data-lb="week" onclick="setLb('week')">This week</button>
+      <button data-lb="conv" onclick="setLb('conv')">Conversations</button>
+      <button data-lb="agree" onclick="setLb('agree')">Agreements</button>
+    </div>
+    <div class="card" id="boardCard">
+      <div class="empty" id="boardEmpty">Connect sharing in Settings to see the whole class here.</div>
+      <div id="boardList"></div>
+    </div>
+    <p class="note">Accountability, not judgment. The point is that nobody quietly disappears.</p>
+  </section>
+
+  <!-- PLAYBOOK -->
+  <section class="view" id="view-play">
+    <h1 class="page">Playbook</h1>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--line)"><h2 style="margin:0">The week — Part One</h2><p class="sub" style="margin:2px 0 0">Mon–Fri, 9:00–12:00. One session a day.</p></div>
+      <table class="sched">
+        <tr><th>Day</th><th>Session</th></tr>
+        <tr><td class="day">Mon</td><td>1 · The MREA Database</td></tr>
+        <tr><td class="day">Tue</td><td>2 · Lead Follow-Up</td></tr>
+        <tr><td class="day">Wed</td><td>3 · Appointments</td></tr>
+        <tr><td class="day">Thu</td><td>4 · Open Houses</td></tr>
+        <tr><td class="day">Fri</td><td>5 · Social Media</td></tr>
+      </table>
+      <div style="padding:12px 16px;border-top:1px solid var(--line);background:#FAFBFC"><h2 style="margin:0;font-size:15px">Then — Part Two, The Practice</h2><p class="sub" style="margin:2px 0 0">120 days: 10 conversations every day → 9 signed agreements.</p></div>
+      <table class="sched">
+        <tr><td class="day">Mon</td><td>Zoom huddle · 8:30–9:00 AM</td></tr>
+        <tr><td class="day">Wed</td><td>Zoom huddle · 8:30–9:00 AM</td></tr>
+        <tr><td class="day">Fri</td><td>Zoom huddle · 8:30–9:00 AM</td></tr>
+      </table>
+      <p class="note" style="padding:0 16px 12px">Huddles are MWF, 8:30–9:00 AM on Zoom. Conversations are daily — log yours every day, not just huddle days.</p>
+    </div>
+
+    <details class="acc" open>
+      <summary><span class="dot"></span>SOI 5-Step Referral Engine</summary>
+      <div class="body">
+        <p><b>List them → Sort them → Tell them → Help them → Ask them.</b> Then do it again.</p>
+        <p>1. <b>Build the list</b> — everyone you know, 100+ working to 200. Don't pre-judge.<br>
+        2. <b>Sort</b> into A (closest + past clients), B (warm), C (casual).<br>
+        3. <b>Announce</b> you're in real estate — a heads-up, not a pitch.<br>
+        4. <b>Add value</b> before you ask — market updates, pop-bys, check-ins.<br>
+        5. <b>Ask</b>, the right way, and make it a daily habit.</p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="dot"></span>The two asks</summary>
+      <div class="body">
+        <p class="tip">Warm contact who already likes you — presuppose the name:</p>
+        <p class="script">"Who do you know who's been thinking about a move?"</p>
+        <p class="tip">Cautious or cold — give them the safe out:</p>
+        <p class="script">"Would it be a bad idea to keep me in mind if someone you know mentions buying or selling?"</p>
+        <p class="tip">Don't stack the two — pick one read of the room.</p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="dot"></span>The announce call</summary>
+      <div class="body">
+        <p class="script">"I wanted you to hear it from me — I got my real estate license and I'm with KW Thrive in Santa Cruz. I'm not calling to sell you anything. I just want the people I care about to know what I'm doing now."</p>
+        <p class="tip">Then shut up and let it be a normal conversation. You're planting a flag, not closing a deal.</p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="dot"></span>⚠️ TCPA reminder — read before call blocks</summary>
+      <div class="body">
+        <p>Comply with the TCPA and all federal, state and local laws. Never call or text a number on any Do Not Call list. Don't use an autodialer, artificial or prerecorded voice without proper consent. When in doubt, ask your broker.</p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="dot"></span>Session 3 · Appointments scripts</summary>
+      <div class="body"><div class="slot">Slot ready — paste the Session 3 talking points from the Command participant guide and I'll format them here.</div></div>
+    </details>
+    <details class="acc">
+      <summary><span class="dot"></span>Session 4 · Open Houses scripts</summary>
+      <div class="body"><div class="slot">Slot ready — paste the Session 4 talking points from Command.</div></div>
+    </details>
+    <details class="acc">
+      <summary><span class="dot"></span>Session 5 · Social Media</summary>
+      <div class="body"><div class="slot">Slot ready — paste the Session 5 talking points from Command.</div></div>
+    </details>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-set">
+    <h1 class="page">Settings</h1>
+    <div class="card">
+      <h2>You</h2>
+      <label class="fld">Your name (shows on the leaderboard)</label>
+      <input class="in" id="setName" placeholder="e.g. Josh Forst">
+      <label class="fld">Program start date</label>
+      <input class="in" id="setStart" type="date">
+      <p class="hint">Day 1 of the 120. Defaults to the Monday of class week.</p>
+    </div>
+    <div class="card">
+      <h2>Cohort sharing <span class="badge off" id="syncBadge">Off</span></h2>
+      <p class="sub">Paste the Web App URL from your Google Sheet script. Blank = private, this device only.</p>
+      <label class="fld">Backend URL</label>
+      <input class="in" id="setUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      <p class="hint">Setup steps are in the guide Maaret sends with this app.</p>
+    </div>
+    <button class="btn primary" onclick="saveSettings()">Save settings</button>
+    <button class="btn ghost" onclick="pushAll()" style="margin-top:10px">Re-sync my history to the sheet</button>
+    <div class="saved" id="setSaved"></div>
+    <p class="note">Built for KW Thrive. Not an official KW product.</p>
+  </section>
+</main>
+
+<nav>
+  <button class="on" data-v="today" onclick="go('today')"><span class="ic">✏️</span>Today</button>
+  <button data-v="dash" onclick="go('dash')"><span class="ic">📊</span>My 120</button>
+  <button data-v="board" onclick="go('board')"><span class="ic">🏆</span>Board</button>
+  <button data-v="play" onclick="go('play')"><span class="ic">📖</span>Playbook</button>
+  <button data-v="set" onclick="go('set')"><span class="ic">⚙️</span>Settings</button>
+</nav>
+
+<script>
+/* ---------- storage ---------- */
+const LS='b120_v1';
+// day record shape: days['2026-07-06'] = {c:8, appt:1, agree:0}
+function load(){try{return Object.assign({name:'',start:'2026-07-06',url:'',days:{}},JSON.parse(localStorage.getItem(LS)||'{}'))}catch(e){return {name:'',start:'2026-07-06',url:'',days:{}}}}
+function save(){localStorage.setItem(LS,JSON.stringify(S))}
+let S=load();
+
+/* ---------- date helpers ---------- */
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dayRec(k){k=k||todayKey();if(!S.days[k])S.days[k]={c:0,appt:0,agree:0};return S.days[k]}
+function programDay(){
+  const start=new Date(S.start+'T00:00:00');const now=new Date(todayKey()+'T00:00:00');
+  const n=Math.floor((now-start)/86400000)+1;return n;
+}
+
+/* ---------- Today ---------- */
+function renderToday(){
+  const r=dayRec();
+  document.getElementById('cNum').textContent=r.c;
+  document.getElementById('cBar').style.width=Math.min(100,r.c/10*100)+'%';
+  document.getElementById('aNum').textContent=r.appt;
+  document.getElementById('gNum').textContent=r.agree;
+}
+function bump(n){const r=dayRec();r.c=Math.max(0,r.c+n);save();renderToday();flashSaved('savedMsg','')}
+function setToday(n){const r=dayRec();r.c=n;save();renderToday()}
+function bumpField(f,n){const r=dayRec();const key=f==='appt'?'appt':'agree';r[key]=Math.max(0,r[key]+n);save();renderToday()}
+function saveToday(){
+  save();flashSaved('savedMsg','Saved ✓');
+  if(S.url)postDay(todayKey());
+  renderDash();
+}
+function flashSaved(id,msg){const el=document.getElementById(id);el.textContent=msg||'Saved ✓';setTimeout(()=>{el.textContent=''},1600)}
+
+/* ---------- Dashboard ---------- */
+function totals(){
+  let c=0,appt=0,agree=0,active=0;
+  for(const k in S.days){const d=S.days[k];c+=d.c;appt+=d.appt;agree+=d.agree;if(d.c>0||d.appt>0||d.agree>0)active++;}
+  return {c,appt,agree,active};
+}
+function streak(){
+  let s=0;const d=new Date(todayKey()+'T00:00:00');
+  for(;;){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const rec=S.days[k];
+    if(rec&&rec.c>0){s++;d.setDate(d.getDate()-1);}
+    else{ if(k===todayKey()){d.setDate(d.getDate()-1);continue;} break;}
+  }
+  return s;
+}
+function renderDash(){
+  const t=totals();const pd=programDay();
+  const dc=Math.min(120,Math.max(0,pd));
+  document.getElementById('dayChip').textContent='Day '+(pd<1?'—':dc)+' of 120';
+  document.getElementById('dAgree').textContent=t.agree;
+  document.getElementById('goalBar').style.width=Math.min(100,t.agree/9*100)+'%';
+  document.getElementById('dConv').textContent=t.c;
+  document.getElementById('dAppt').textContent=t.appt;
+  // pace: 9 agreements over 120 days
+  const expected=pd<1?0:(9*Math.min(pd,120)/120);
+  const pace=document.getElementById('paceMsg');
+  if(pd<1){pace.textContent='Program starts '+S.start+'.';pace.className='pace';}
+  else{
+    const diff=(t.agree-expected).toFixed(1);
+    if(t.agree>=expected){pace.textContent='On or ahead of pace (target ~'+expected.toFixed(1)+' by today).';pace.className='pace ahead';}
+    else{pace.textContent='Behind pace by '+Math.abs(diff)+' (target ~'+expected.toFixed(1)+' by today).';pace.className='pace behind';}
+  }
+  // conv goal by today = 10/day
+  document.getElementById('convGoal').textContent='goal by today: '+(pd<1?0:Math.min(pd,120)*10);
+  // funnel
+  const mx=Math.max(t.c,1);
+  document.getElementById('fConv').style.height=Math.max(6,t.c/mx*80)+'px';
+  document.getElementById('fAppt').style.height=Math.max(6,t.appt/mx*80)+'px';
+  document.getElementById('fAgree').style.height=Math.max(6,t.agree/mx*80)+'px';
+  document.getElementById('fConvN').textContent=t.c;
+  document.getElementById('fApptN').textContent=t.appt;
+  document.getElementById('fAgreeN').textContent=t.agree;
+  // streak
+  document.getElementById('streak').textContent=streak();
+  document.getElementById('daysActive').textContent=t.active;
+  document.getElementById('avgConv').textContent=t.active?Math.round(t.c/t.active):0;
+}
+
+/* ---------- Leaderboard ---------- */
+let lbMode='week',lbData=null;
+function setLb(m){lbMode=m;document.querySelectorAll('.lbtabs button').forEach(b=>b.classList.toggle('on',b.dataset.lb===m));renderBoard()}
+function weekStartKey(){const d=new Date(todayKey()+'T00:00:00');const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function myAgg(){
+  const t=totals();let wc=0;const ws=weekStartKey();
+  for(const k in S.days){if(k>=ws)wc+=S.days[k].c;}
+  return {name:S.name||'You',conv:t.c,agree:t.agree,week:wc,me:true};
+}
+async function fetchBoard(){
+  if(!S.url){lbData=null;return;}
+  try{
+    const res=await fetch(S.url+'?action=leaderboard',{method:'GET'});
+    const j=await res.json();lbData=j.rows||[];
+  }catch(e){lbData=null;}
+}
+function renderBoard(){
+  const list=document.getElementById('boardList');const empty=document.getElementById('boardEmpty');
+  let rows=[];
+  if(lbData&&lbData.length){rows=lbData.slice();}
+  const me=myAgg();
+  const has=rows.find(r=>(r.name||'').toLowerCase()===me.name.toLowerCase());
+  if(!has)rows.push(me);
+  if(!S.url&&(!lbData||!lbData.length)){rows=[me];}
+  const key=lbMode==='week'?'week':(lbMode==='agree'?'agree':'conv');
+  rows.sort((a,b)=>(b[key]||0)-(a[key]||0));
+  if(!rows.length||(!S.url&&me.conv===0&&me.agree===0)){empty.style.display='block';list.innerHTML='';return;}
+  empty.style.display=S.url?'none':(rows.length>1?'none':'block');
+  const unit=key==='agree'?'agreements':(key==='week'?'this week':'conversations');
+  list.innerHTML=rows.map((r,i)=>{
+    const nm=r.name||'—';const init=nm.trim().slice(0,1).toUpperCase()||'?';
+    const isMe=(r.me)||(nm.toLowerCase()===(S.name||'').toLowerCase());
+    return `<div class="lrow ${isMe?'me':''}">
+      <div class="rank ${i<3?'top':''}">${i+1}</div>
+      <div class="ava">${init}</div>
+      <div><div class="nm">${nm}${isMe?' (you)':''}</div><div class="meta">${r.conv||0} conv · ${r.agree||0} agreements</div></div>
+      <div class="score">${r[key]||0}<span style="font-size:10px;color:var(--muted);font-weight:600;display:block;text-align:right">${unit}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Backend sync (Google Apps Script) ---------- */
+function postDay(k){
+  if(!S.url)return;
+  const d=S.days[k];if(!d)return;
+  const payload={name:S.name||'Unknown',date:k,conversations:d.c,appointments:d.appt,agreements:d.agree};
+  fetch(S.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}).catch(()=>{});
+}
+function pushAll(){
+  if(!S.url){flashSaved('setSaved','Add a backend URL first');return;}
+  Object.keys(S.days).forEach(k=>postDay(k));
+  flashSaved('setSaved','Synced ✓');
+}
+
+/* ---------- Settings ---------- */
+function saveSettings(){
+  S.name=document.getElementById('setName').value.trim();
+  S.start=document.getElementById('setStart').value||'2026-07-06';
+  S.url=document.getElementById('setUrl').value.trim();
+  save();syncUI();flashSaved('setSaved','Saved ✓');
+  if(S.url)pushAll();
+}
+function syncUI(){
+  document.getElementById('whoName').textContent=S.name||'Set your name';
+  const pd=programDay();document.getElementById('whoDay').textContent=pd>=1&&pd<=120?('Day '+pd):'';
+  const on=!!S.url;
+  document.getElementById('syncBadge').className='badge '+(on?'on':'off');
+  document.getElementById('syncBadge').textContent=on?'On':'Off';
+  document.getElementById('syncNote').style.display=on?'none':'block';
+}
+
+/* ---------- nav ---------- */
+function go(v){
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  if(v==='dash')renderDash();
+  if(v==='board'){fetchBoard().then(renderBoard)}
+  if(v==='today')renderToday();
+}
+
+/* ---------- init ---------- */
+function init(){
+  document.getElementById('setName').value=S.name;
+  document.getElementById('setStart').value=S.start;
+  document.getElementById('setUrl').value=S.url;
+  syncUI();renderToday();renderDash();
+}
+init();
+</script>
+</body>
+</html>
